@@ -11,7 +11,19 @@ const query = sql =>
     }) 
   })
 
+const addMovie = ({ name, year }) => 
+  query(`
+    INSERT INTO movies (
+      "name",
+      "year"
+    ) VALUES (
+      "${name}",
+      ${year}
+    )
+  `)
+
 module.exports = {
   getMovies: () => query('SELECT * FROM movies'),
-  getLinks: () => query('SELECT * FROM links')
+  getLinks: () => query('SELECT * FROM links'),
+  addMovie
 }
