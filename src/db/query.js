@@ -25,5 +25,10 @@ const addMovie = ({ name, year }) =>
 module.exports = {
   getMovies: () => query('SELECT * FROM movies'),
   getLinks: () => query('SELECT * FROM links'),
-  addMovie
+  addMovie,
+  getMovieByNameAndYear: ({ name, year }) => query(`
+    SELECT * FROM movies
+    WHERE
+      name="${name}" AND year=${year}
+  `)
 }
