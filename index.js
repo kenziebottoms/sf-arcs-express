@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const { getAll } = require('./src/db/get')
+const { getLinks, getMovies } = require('./src/db/get')
 
 const port = 3000
 
@@ -9,7 +9,11 @@ app.get('/', (req, res) => {
 })
 
 app.get('/movies', (req, res) => {
-  getAll().then(data => res.send(data))
+  getMovies().then(data => res.send(data))
+})
+
+app.get('/links', (req, res) => {
+  getLinks().then(data => res.send(data))
 })
 
 app.listen(port, () => {

@@ -12,5 +12,6 @@ const query = sql =>
   })
 
 module.exports = {
-  getAll: () => query('SELECT * FROM movies')
+  getMovies: () => query('SELECT * FROM movies'),
+  getLinks: () => query('SELECT * FROM links')
 }
