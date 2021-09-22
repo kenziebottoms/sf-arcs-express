@@ -4,7 +4,8 @@ const {
   getLinks, 
   getMovies, 
   addMovie, 
-  getMovieByNameAndYear 
+  getMovieByNameAndYear, 
+  addLink
 } = require('./src/db/query')
 
 const port = 3000
@@ -35,8 +36,16 @@ app.post('/movies', async (req, res, next) => {
 app.get('/links', (req, res) => {
   getLinks().then(data => res.send(data))
 })
+app.post('/links', async (req, res, next) => {
+  try {
+    await addLink(req.body)
+    res.sendStatus(201)
+  } catch (e) {
+    next(e)
+  }
+})
 
-app.use(function(err, req, res) {
+app.use(function(err, req, res, next) {
   console.log(err.stack);
   res.status(500).send(err.message)
 })

@@ -22,13 +22,46 @@ const addMovie = ({ name, year }) =>
     )
   `)
 
+const getMovieByNameAndYear = ({ name, year }) => query(`
+  SELECT * FROM movies
+  WHERE
+    name="${name}" AND year=${year}
+`)
+
+const getMovieByName = (name) => query(`
+  SELECT * FROM movies
+  WHERE name="${name}"
+`)
+
+const addLink = ({ source, referrer, weight }) =>
+  new Promise(async (resolve, reject) => {
+    const sourceMovie = await getMovieByName(source)
+    const referrerMovie = await getMovieByName(referrer)
+    if (sourceMovie[0].id && referrerMovie[0].id) {
+      const result = await query(`
+        INSERT INTO links (
+          "source",
+          "referrer",
+          "weight"
+        ) VALUES (
+          ${sourceMovie[0].id},
+          ${referrerMovie[0].id},
+          ${weight}
+        )
+      `)
+      return resolve(result)
+    } else {
+      return reject(
+        new Error('Please make sure both movies exist in the database.')
+      )
+    }
+  })
+
 module.exports = {
   getMovies: () => query('SELECT * FROM movies'),
-  getLinks: () => query('SELECT * FROM links'),
   addMovie,
-  getMovieByNameAndYear: ({ name, year }) => query(`
-    SELECT * FROM movies
-    WHERE
-      name="${name}" AND year=${year}
-  `)
+  getMovieByName,
+  getMovieByNameAndYear,
+  getLinks: () => query('SELECT * FROM links'),
+  addLink
 }
