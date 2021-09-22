@@ -1,6 +1,7 @@
 const { 
   selectMovieByName,
-  insertLink
+  insertLink,
+  selectLinksByMovieIds
 } = require('./db/query')
 
 const addLink = async ({ source, referrer, weight }) => {
@@ -20,7 +21,17 @@ const addLink = async ({ source, referrer, weight }) => {
     }
   }
 
+  const [existingLink] = await selectLinksByMovieIds(sourceMovie.id, referrerMovie.id)
+  if (existingLink) {
+    console.log(`Link already exists: ${source} => ${referrer} (${weight})`)
+    return {
+      status: 200,
+      data: existingLink
+    }
+  }
+
   await insertLink(sourceMovie.id, referrerMovie.id, weight)
+  console.log(`Link added: ${source} => ${referrer} (${weight})`)
   return {
     status: 201,
     data: {
