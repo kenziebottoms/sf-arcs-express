@@ -18,19 +18,14 @@ app.get('/', (req, res) => {
 app.get('/movies', (req, res) => {
   getMovies().then(data => res.send(data))
 })
-app.post('/movies', (req, res) => {
-  getMovieByNameAndYear(req.body).then(data => {
-    if (data) {
-      res.status(200).send(data[0])
-    } else {
-      return addMovie(req.body)
-    }
-  }).then(data => {
-    res.status(201).send(data)
-  }).catch(e => {
-    console.log(e)
-    res.status(500).send(e)
-  })
+app.post('/movies', async (req, res) => {
+  const rows = await getMovieByNameAndYear(req.body)
+  if (rows) {
+    res.status(200).send(rows[0])
+  } else {
+    await addMovie(req.body)
+    res.status(201).send(req.body)
+  }
 })
 
 app.get('/links', (req, res) => {
