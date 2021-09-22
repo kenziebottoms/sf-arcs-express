@@ -18,18 +18,27 @@ app.get('/', (req, res) => {
 app.get('/movies', (req, res) => {
   getMovies().then(data => res.send(data))
 })
-app.post('/movies', async (req, res) => {
-  const rows = await getMovieByNameAndYear(req.body)
-  if (rows) {
-    res.status(200).send(rows[0])
-  } else {
-    await addMovie(req.body)
-    res.status(201).send(req.body)
+app.post('/movies', async (req, res, next) => {
+  try {
+    const rows = await getMovieByNameAndYear(req.body)
+    if (rows) {
+      res.status(200).send(rows[0])
+    } else {
+      await addMovie(req.body)
+      res.status(201).send(req.body)
+    }
+  } catch(e) {
+    next(e)
   }
 })
 
 app.get('/links', (req, res) => {
   getLinks().then(data => res.send(data))
+})
+
+app.use(function(err, req, res) {
+  console.log(err.stack);
+  res.status(500).send(err.message)
 })
 
 app.listen(port, () => {
