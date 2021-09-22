@@ -36,6 +36,13 @@ const selectMovieByName = (name) => query(`
   WHERE name="${name}"
 `)
 
+
+const selectLinksByMovieIds = (source, referrer) => query(`
+  SELECT * FROM links
+  WHERE
+    source=${source} AND referrer=${referrer}
+`)
+
 const insertLink = (sourceId, referrerId, weight) => query(`
   INSERT INTO links (
     "source",
@@ -54,5 +61,6 @@ module.exports = {
   selectMovieByName,
   selectMovieByNameAndYear,
   selectLinks: () => query('SELECT * FROM links'),
+  selectLinksByMovieIds,
   insertLink
 }
