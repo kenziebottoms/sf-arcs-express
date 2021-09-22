@@ -22,7 +22,7 @@
     "jsx-quotes": ["error", "prefer-single"],
     "key-spacing": ["error", { "mode": "strict" }],
     "linebreak-style": ["error", "unix"],
-    "max-len": ["error", { "code": 80, "ignoreComments": false }],
+    "max-len": ["error", { "code": 90, "ignoreComments": false }],
     "multiline-comment-style": "off",
     "no-extra-parens": "error",
     "no-multi-spaces": "error",
