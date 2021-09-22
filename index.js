@@ -2,12 +2,14 @@ const express = require('express')
 const app = express()
 const { 
   selectLinks, 
-  selectMovies, 
-  addLink
+  selectMovies 
 } = require('./src/db/query')
 const {
   addMovie
 } = require('./src/movies')
+const {
+  addLink
+} = require('./src/links')
 
 const port = 3000
 
@@ -34,8 +36,8 @@ app.get('/links', (req, res) => {
 })
 app.post('/links', async (req, res, next) => {
   try {
-    await addLink(req.body)
-    res.sendStatus(201)
+    const { status, data } = await addLink(req.body)
+    res.status(status).send(data)
   } catch (e) {
     next(e)
   }

@@ -36,29 +36,17 @@ const selectMovieByName = (name) => query(`
   WHERE name="${name}"
 `)
 
-const addLink = ({ source, referrer, weight }) =>
-  new Promise(async (resolve, reject) => {
-    const sourceMovie = await selectMovieByName(source)
-    const referrerMovie = await selectMovieByName(referrer)
-    if (sourceMovie[0].id && referrerMovie[0].id) {
-      const result = await query(`
-        INSERT INTO links (
-          "source",
-          "referrer",
-          "weight"
-        ) VALUES (
-          ${sourceMovie[0].id},
-          ${referrerMovie[0].id},
-          ${weight}
-        )
-      `)
-      return resolve(result)
-    } else {
-      return reject(
-        new Error('Please make sure both movies exist in the database.')
-      )
-    }
-  })
+const insertLink = (sourceId, referrerId, weight) => query(`
+  INSERT INTO links (
+    "source",
+    "referrer",
+    "weight"
+  ) VALUES (
+    ${sourceId},
+    ${referrerId},
+    ${weight}
+  )
+`)
 
 module.exports = {
   selectMovies: () => query('SELECT * FROM movies'),
@@ -66,5 +54,5 @@ module.exports = {
   selectMovieByName,
   selectMovieByNameAndYear,
   selectLinks: () => query('SELECT * FROM links'),
-  addLink
+  insertLink
 }
