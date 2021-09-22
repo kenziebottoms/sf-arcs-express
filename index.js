@@ -1,12 +1,13 @@
 const express = require('express')
 const app = express()
 const { 
-  getLinks, 
-  getMovies, 
-  addMovie, 
-  getMovieByNameAndYear, 
+  selectLinks, 
+  selectMovies, 
   addLink
 } = require('./src/db/query')
+const {
+  addMovie
+} = require('./src/movies')
 
 const port = 3000
 
@@ -17,24 +18,19 @@ app.get('/', (req, res) => {
 })
 
 app.get('/movies', (req, res) => {
-  getMovies().then(data => res.send(data))
+  selectMovies().then(data => res.send(data))
 })
 app.post('/movies', async (req, res, next) => {
   try {
-    const rows = await getMovieByNameAndYear(req.body)
-    if (rows) {
-      res.status(200).send(rows[0])
-    } else {
-      await addMovie(req.body)
-      res.status(201).send(req.body)
-    }
+    const { status, data } = await addMovie(req.body)
+    res.status(status).send(data)
   } catch(e) {
     next(e)
   }
 })
 
 app.get('/links', (req, res) => {
-  getLinks().then(data => res.send(data))
+  selectLinks().then(data => res.send(data))
 })
 app.post('/links', async (req, res, next) => {
   try {
@@ -46,10 +42,10 @@ app.post('/links', async (req, res, next) => {
 })
 
 app.use(function(err, req, res, next) {
-  console.log(err.stack);
+  console.log(err.stack)
   res.status(500).send(err.message)
 })
 
 app.listen(port, () => {
-  console.log('listening at port ' + port)
+  console.log(`listening at port ${port}`)
 })

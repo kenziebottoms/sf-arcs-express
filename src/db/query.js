@@ -1,17 +1,20 @@
 const db = require('./index')
 
-const query = sql =>
-  new Promise((resolve, reject) => {
+const query = sql => {
+  console.log(`SQL: \`${sql}\``) 
+  return new Promise((resolve, reject) => {
     db.all(sql, function(err, rows) {
       if (err) {
         return reject(err)
       } else {
+        console.log(`Results: ${JSON.stringify(rows)}`)
         return resolve(rows)
       }
     }) 
   })
+}
 
-const addMovie = ({ name, year }) => 
+const insertMovie = ({ name, year }) => 
   query(`
     INSERT INTO movies (
       "name",
@@ -22,21 +25,21 @@ const addMovie = ({ name, year }) =>
     )
   `)
 
-const getMovieByNameAndYear = ({ name, year }) => query(`
+const selectMovieByNameAndYear = ({ name, year }) => query(`
   SELECT * FROM movies
   WHERE
     name="${name}" AND year=${year}
 `)
 
-const getMovieByName = (name) => query(`
+const selectMovieByName = (name) => query(`
   SELECT * FROM movies
   WHERE name="${name}"
 `)
 
 const addLink = ({ source, referrer, weight }) =>
   new Promise(async (resolve, reject) => {
-    const sourceMovie = await getMovieByName(source)
-    const referrerMovie = await getMovieByName(referrer)
+    const sourceMovie = await selectMovieByName(source)
+    const referrerMovie = await selectMovieByName(referrer)
     if (sourceMovie[0].id && referrerMovie[0].id) {
       const result = await query(`
         INSERT INTO links (
@@ -58,10 +61,10 @@ const addLink = ({ source, referrer, weight }) =>
   })
 
 module.exports = {
-  getMovies: () => query('SELECT * FROM movies'),
-  addMovie,
-  getMovieByName,
-  getMovieByNameAndYear,
-  getLinks: () => query('SELECT * FROM links'),
+  selectMovies: () => query('SELECT * FROM movies'),
+  insertMovie,
+  selectMovieByName,
+  selectMovieByNameAndYear,
+  selectLinks: () => query('SELECT * FROM links'),
   addLink
 }
